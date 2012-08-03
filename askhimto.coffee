@@ -17,12 +17,15 @@ suggestions = [
   "But you might assign a task to somebody. Isn't it fun?",
   "Don't forget to push your changes!",
   "Don't forget to add new files in the repo!",
-  "Take a deep breath and taste the freedom."
+  "Take a deep breath and taste the freedom.",
+  "You are free to sleep now",
+  "Everyone is grateful to you!",
+  "And this is horosho."
 ]
 
 module.exports = (robot) ->
 
-  robot.respond /ask (.*)? to (.*)/i, (msg) ->
+  robot.respond /ask (.*?) to (.*)/i, (msg) ->
     who = msg.match[1].toLowerCase()
     what = msg.match[2]
     robot.brain.data ?= []
@@ -45,7 +48,9 @@ module.exports = (robot) ->
     whatlist = robot.brain.data.todo[who].splice(aid, 1)
     robot.brain.data.done[who].push whatlist[0]
     msg.send whatlist[0]+"→"
-    msg.send "You have no tasks left, congratulations for being productive!" if robot.brain.data.todo[who].length == 0
+    if robot.brain.data.todo[who].length == 0
+      msg.send "You have no tasks left, congratulations for being productive!" 
+      msg.send msg.random suggestions
     msg.send "That's great! You have more important stuff to do though." if robot.brain.data.todo[who].length != 0
     robot.brain.save(robot.brain.data)
 
