@@ -6,6 +6,20 @@
 #   hubot [I have] done <action_id> — report that you have finished action with <action_id>
 #   hubot [what] to[ ]do — list <action_id>: <action> you have to perform
 
+suggestions = [
+  "Consider going out?",
+  "You may take your time to read a book!",
+  "Maybe there was something that wasn't on the list?",
+  "Now go upgrade your linux distro. It takes a lot of time lately.",
+  "Chill.",
+  "Relax.",
+  "Have fun.",
+  "But you might assign a task to somebody. Isn't it fun?",
+  "Don't forget to push your changes!",
+  "Don't forget to add new files in the repo!",
+  "Take a deep breath and taste the freedom."
+]
+
 module.exports = (robot) ->
 
   robot.respond /ask (.*)? to (.*)/i, (msg) ->
@@ -45,7 +59,9 @@ module.exports = (robot) ->
     todo = "\n"
     todo += robot.brain.data.todo[who].indexOf(what)+": "+what+"\n" for what in robot.brain.data.todo[who]
     msg.send todo if robot.brain.data.todo[who].length != 0
-    msg.send "You have nothing left to do" if robot.brain.data.todo[who].length == 0
+    if robot.brain.data.todo[who].length == 0
+      msg.send "Nothing to do yet."
+      msg.send msg.random suggestions
     robot.brain.save(robot.brain.data)
    
 #
