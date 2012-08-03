@@ -23,5 +23,5 @@
 #	exit 1
 #}
 
-curl -d "user=MagBo&wc=${PWD##*/}&msg=`cat $1`" http://memorici.de:54545/hubot/githooks/commit/spaceships/
+curl -d "user=GIT_NAME&wc=${PWD##*/}&msg=`cat $1`" http://HUBOT_HOST:HUBOT_PORT/hubot/githooks/commit/spaceships/
 exit 0
