@@ -7,6 +7,8 @@
 #   hubot [what] to[ ]do — list <action_id>: <action> you have to perform
 #   hubot suggest <user> to <action> for <category>
 
+Util = require "util"
+
 class HumanTaskManager
   constructor: (@robot) ->
     @free_message = [
@@ -54,7 +56,7 @@ module.exports = (robot) ->
     who = msg.message.user.name.toLowerCase()
     whatlist = robot.brain.data.todo[who].splice(aid, 1)
     robot.brain.data.done[who].push whatlist[0]
-    msg.send whatlist[0]+"→ (done)"
+    msg.send whatlist[0]+" → (done)"
     if robot.brain.data.todo[who].length == 0
       msg.send "You have no tasks left, congratulations for being productive!" 
       msg.send msg.random suggestions
@@ -70,10 +72,10 @@ module.exports = (robot) ->
     msg.send todo if robot.brain.data.todo[who].length != 0
     if robot.brain.data.todo[who].length == 0
       msg.send "Nothing to do yet."
-      msg.send msg.random suggestions
+      msg.send msg.random taskmanager.free_message
     robot.brain.save(robot.brain.data)
    
-  robot.respond /suggest (.*?) to (.*?) for (.*)/i, (msg) ->
+  robot.respond /suggest (.*?) to (.*) for (.*)/i, (msg) ->
     who = msg.match[1].toLowerCase()
     what = msg.match[2]
     cat = msg.match[3]
@@ -82,7 +84,10 @@ module.exports = (robot) ->
     robot.brain.data.suggestions[cat][who] ?= []
     robot.brain.data.suggestions[cat][who].push what
     msg.send "("+cat+") ← "+what
-    taskmanager.stuff_to_do who, msg
+  
+  robot.respond /moods/i, (msg) ->
+    out = Util.inspect(robot.brain.data.suggestions, false, 1)
+    msg.send out
 
   robot.respond /mood for (.*)/i, (msg) ->
     cat = msg.match[1]
@@ -104,3 +109,12 @@ module.exports = (robot) ->
       robot.brain.data.trashcan.push whatlist[0]
     msg.send whatlist[0]+"→ (done)"
     taskmanager.stuff_to_do who, msg
+
+  robot.respond /dev askhimto delete (.*) end( invalid user (.*))? end/i, (msg) ->
+    if msg.match[2]
+      msg.send robot.brain.data.suggestions[msg.match[1]][msg.match[3]] 
+      delete robot.brain.data.suggestions[msg.match[1]][msg.match[3]]
+    else
+      msg.send robot.brain.data.suggestions[msg.match[1]]
+      delete robot.brain.data.suggestions[msg.match[1]]
+    msg.send "Ok"
