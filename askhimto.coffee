@@ -91,7 +91,7 @@ module.exports = (robot) ->
 
   robot.respond /mood for (.*) as (.*)/i, (msg) ->
     cat = msg.match[1]
-    who = msg.match[2]
+    who = msg.match[2].toLowerCase()
     todo = "\n"
     if robot.brain.data.suggestions[cat] && robot.brain.data.suggestions[cat][who]
       todo += robot.brain.data.suggestions[cat][who].indexOf(sgt)+": "+sgt+"\n" for sgt in robot.brain.data.suggestions[cat][who]
