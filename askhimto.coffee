@@ -89,6 +89,18 @@ module.exports = (robot) ->
     out = Util.inspect(robot.brain.data.suggestions, false, 1)
     msg.send out
 
+  robot.respond /mood for (.*) as (.*)/i, (msg) ->
+    cat = msg.match[1]
+    who = msg.match[2]
+    todo = "\n"
+    if robot.brain.data.suggestions[cat] && robot.brain.data.suggestions[cat][who]
+      todo += robot.brain.data.suggestions[cat][who].indexOf(sgt)+": "+sgt+"\n" for sgt in robot.brain.data.suggestions[cat][who]
+      msg.send todo
+    else
+      msg.send "Sadly, you don't have anything suggested for «"+cat+"» mood"
+    taskmanager.stuff_to_do who, msg
+
+
   robot.respond /mood for (.*)/i, (msg) ->
     cat = msg.match[1]
     who = msg.message.user.name.toLowerCase()
