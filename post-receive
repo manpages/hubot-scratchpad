@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+# Notify hubot when someone pushes.
+
+require 'net/http'
+
+branches = []
+cnum = 0
+STDIN.each do |line|
+  (oldref, newref, refname) = line.split
+    branches.push `git rev-parse --symbolic --abbrev-ref #{refname}`.chomp
+    cnum += `git log --format=oneline #{oldref}..#{newref} | wc -l`.chomp.to_i
+    end
+
+    branches = branches.uniq.join(", ")
+    repo = ENV['GL_REPO']
+    user = ENV['GL_USER']
+
+    uri = URI('http://memorici.de:54545/hubot/git/pushed/spaceships/')
+    Net::HTTP.post_form uri, 'user' => user, 'num' => cnum, 'branch' => branches, 'repo' => repo
