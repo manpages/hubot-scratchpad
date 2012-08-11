@@ -27,10 +27,6 @@ class HumanTaskManager
       "Everyone is grateful to you!",
       "And this is horosho."
     ]
-    @robot.brain.data.todo ?= {}
-    @robot.brain.data.done ?= {}
-    @robot.brain.data.suggestions ?= {}
-    @robot.brain.data.trashcan ?= []
 
   stuff_to_do: (who, msg) ->
     if @robot.brain.data.todo && @robot.brain.data.todo[who]
@@ -42,28 +38,40 @@ module.exports = (robot) ->
   taskmanager = new HumanTaskManager(robot)
 
   robot.respond /ask (.*?) to (.*)/i, (msg) ->
-    robot.brain.data.todo[who] ?= []
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     who = msg.match[1].toLowerCase()
+    robot.brain.data.todo[who] ?= []
     what = msg.match[2]
     robot.brain.data.todo[who].push what
     msg.send "Ok"
     robot.brain.save(robot.brain.data)
 
   robot.respond /(I have )?done (\d+)/i, (msg) ->
-    robot.brain.data.todo[who] ?= []
-    robot.brain.data.done[who] ?= []
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     aid = msg.match[2]
     who = msg.message.user.name.toLowerCase()
+    robot.brain.data.todo[who] ?= []
+    robot.brain.data.done[who] ?= []
     whatlist = robot.brain.data.todo[who].splice(aid, 1)
     robot.brain.data.done[who].push whatlist[0]
     msg.send whatlist[0]+" → (done)"
     if robot.brain.data.todo[who].length == 0
       msg.send "You have no tasks left, congratulations for being productive!" 
-      msg.send msg.random suggestions
+      msg.send msg.random taskmanager.free_message
     msg.send "That's great! You have more important stuff to do though." if robot.brain.data.todo[who].length != 0
     robot.brain.save(robot.brain.data)
 
   robot.respond /(what )?to( )?do/i, (msg) ->
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     robot.brain.data.todo[who] ?= []
     robot.brain.data.done[who] ?= []
     who = msg.message.user.name.toLowerCase()
@@ -76,6 +84,10 @@ module.exports = (robot) ->
     robot.brain.save(robot.brain.data)
    
   robot.respond /suggest (.*?) to (.*) for (.*)/i, (msg) ->
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     who = msg.match[1].toLowerCase()
     what = msg.match[2]
     cat = msg.match[3]
@@ -90,6 +102,10 @@ module.exports = (robot) ->
     msg.send out
 
   robot.respond /mood for (.*) as (.*)/i, (msg) ->
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     cat = msg.match[1]
     who = msg.match[2].toLowerCase()
     todo = "\n"
@@ -102,6 +118,10 @@ module.exports = (robot) ->
 
 
   robot.respond /mood for (.*)/i, (msg) ->
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     cat = msg.match[1]
     who = msg.message.user.name.toLowerCase()
     todo = "\n"
@@ -113,6 +133,10 @@ module.exports = (robot) ->
     taskmanager.stuff_to_do who, msg
 
   robot.respond /(enjoyed|disliked) (.*) (\d*)/i, (msg) ->
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     cat = msg.match[2]
     aid = msg.match[3]
     who = msg.message.user.name.toLowerCase()
@@ -123,6 +147,10 @@ module.exports = (robot) ->
     taskmanager.stuff_to_do who, msg
 
   robot.respond /dev askhimto delete (.*) end( invalid user (.*))? end/i, (msg) ->
+    robot.brain.data.todo ?= {}
+    robot.brain.data.done ?= {}
+    robot.brain.data.suggestions ?= {}
+    robot.brain.data.trashcan ?= []
     if msg.match[2]
       msg.send robot.brain.data.suggestions[msg.match[1]][msg.match[3]] 
       delete robot.brain.data.suggestions[msg.match[1]][msg.match[3]]
