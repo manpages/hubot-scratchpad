@@ -103,12 +103,6 @@ module.exports = (robot) ->
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.ask(who, what, msg)
-  robot.respond /(.*)> R2: ask (.*?) to (.*)/i, (msg) ->
-    who = msg.match[2].toLowerCase()
-    what = msg.match[3]
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.ask(who, what, msg)
 
   robot.respond /(I have )?done (\d+)/i, (msg) ->
     aid = msg.match[2]
@@ -116,20 +110,9 @@ module.exports = (robot) ->
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.done(aid, who, msg)
-  robot.respond /(.*)> R2: (I have )?done (\d+)/i, (msg) ->
-    aid = msg.match[3]
-    who = msg.match[1].toLowerCase()
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.done(aid, who, msg)
 
   robot.respond /(what )?to( )?do/i, (msg) ->
     who = msg.message.user.name.toLowerCase()
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.todo(who, msg)
-   robot.respond /(.*)> R2: (what )?to( )?do/i, (msg) ->
-    who = msg.match[1].toLowerCase()
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.todo(who, msg)
@@ -141,31 +124,14 @@ module.exports = (robot) ->
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.suggest(who, what, cat, msg)
-  robot.respond /(.*)> R2: suggest (.*?) to (.*) for (.*)/i, (msg) ->
-    who = msg.match[2].toLowerCase()
-    what = msg.match[3]
-    cat = msg.match[4]
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.suggest(who, what, cat, msg)
  
   robot.respond /moods/i, (msg) ->
-    out = Util.inspect(robot.brain.data.suggestions, false, 1)
-    msg.send out
-
-  robot.respond /(.*)> R2: moods/i, (msg) ->
     out = Util.inspect(robot.brain.data.suggestions, false, 1)
     msg.send out
 
   robot.respond /mood for (.*) as (.*)/i, (msg) ->
     cat = msg.match[1]
     who = msg.match[2].toLowerCase()
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.mood_for(who, cat, msg)
-  robot.respond /(.*)> R2: mood for (.*) as (.*)/i, (msg) ->
-    cat = msg.match[2]
-    who = msg.match[3].toLowerCase()
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.mood_for(who, cat, msg)
@@ -176,24 +142,11 @@ module.exports = (robot) ->
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.mood_for(who, cat, msg)    
-  robot.respond /(.*)> R2: mood for (.*)/i, (msg) ->
-    cat = msg.match[2]
-    who = msg.match[1].toLowerCase()
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.mood_for(who, cat, msg)    
 
   robot.respond /(enjoyed|disliked) (.*) (\d*)/i, (msg) ->
     cat = msg.match[2]
     aid = msg.match[3]
     who = msg.message.user.name.toLowerCase()
-    taskmanager.data_init()
-    taskmanager.person_init(who)
-    taskmanager.enjoyed(who, cat, aid, msg)
-  robot.respond /(.*)> R2: (enjoyed|disliked) (.*) (\d*)/i, (msg) ->
-    cat = msg.match[3]
-    aid = msg.match[4]
-    who = msg.match[1].toLowerCase()
     taskmanager.data_init()
     taskmanager.person_init(who)
     taskmanager.enjoyed(who, cat, aid, msg)
