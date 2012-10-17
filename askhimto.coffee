@@ -30,7 +30,7 @@ class HumanTaskManager
     ]
 
   stuff_to_do: (who, msg) ->
-    if @robot.brain.data.todo && @robot.brain.data.todo[who]
+    if @robot.brain.data.todo.length && @robot.brain.data.todo[who].length != 0
       msg.send "By the way, you have stuff to do. For instance"
       msg.send msg.random @robot.brain.data.todo[who]
 
@@ -55,7 +55,7 @@ class HumanTaskManager
     msg.send whatlist[0]+" → (done)"
     if @robot.brain.data.todo[who].length == 0
       msg.send "You have no tasks left, congratulations for being productive!" 
-      msg.send msg.random taskmanager.free_message
+      msg.send msg.random @free_message
     msg.send "That's great! You have more important stuff to do though." if @robot.brain.data.todo[who].length != 0
     @robot.brain.save(@robot.brain.data)
 
@@ -65,7 +65,7 @@ class HumanTaskManager
     msg.send todo if @robot.brain.data.todo[who].length != 0
     if @robot.brain.data.todo[who].length == 0
       msg.send "Nothing to do yet."
-      msg.send msg.random taskmanager.free_message
+      msg.send msg.random @free_message
     @robot.brain.save(@robot.brain.data)
   
   suggest: (who, what, cat, msg) ->
@@ -88,8 +88,8 @@ class HumanTaskManager
     if @robot.brain.data.suggestions[cat] && @robot.brain.data.suggestions[cat][who]
       whatlist = @robot.brain.data.suggestions[cat][who].splice(aid, 1)
       @robot.brain.data.trashcan.push whatlist[0]
-    msg.send whatlist[0]+"→ (done)"
-    taskmanager.stuff_to_do who, msg
+    msg.send whatlist[0]+" → (done)"
+    @stuff_to_do who, msg
 
 
  
